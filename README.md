@@ -1,0 +1,1 @@
+# sakura-vps-arch-install
