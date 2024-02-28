@@ -12,7 +12,6 @@ loadkeys jp106
 timedatectl status
 ip a
 lsblk
-#sgdisk -p /dev/vda
 
 # パーティションの作成
 echo "/dev/vda を初期化してもよろしいですか？(y/N): "; read -q && echo "パーティションを初期化します" || exit
@@ -28,15 +27,15 @@ echo "rootパーティションを作成します"
 sgdisk --new 3:: /dev/vda
 sgdisk --typecode 3:8304 /dev/vda
 sgdisk --change-name 3:"ArchLinux" /dev/vda
-sgdisk --print /dev/sda
+sgdisk --print /dev/vda
 
 # パーティションのフォーマット
 echo "EFIシステムパーティションを初期化します"
-mkfs.fat -F 32 /dev/sda1
+mkfs.fat -F 32 /dev/vda1
 echo "swapパーティションを初期化します"
-mkswap /dev/sda2
+mkswap /dev/vda2
 echo "rootパーティションを初期化します"
-mkfs.ext4 /dev/sda3
+mkfs.ext4 /dev/vda3
 
 # ファイルシステムのマウント
 echo "ファイルシステムをマウントします"
@@ -63,3 +62,6 @@ echo "fastabを生成します"
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # chroot
+wget -P /mnt/tmp/ https://raw.githubusercontent.com/soramikan/sakura-vps-arch-install/main/chroot.sh
+chmod +x /mnt/tmp/chroot.sh
+arch-chroot /mnt /tmp/chroot.sh
